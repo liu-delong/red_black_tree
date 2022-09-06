@@ -3,36 +3,50 @@
 #include<iostream>
 #include<queue>
 using namespace std;
-/* declarations of some exception begin*/
+/* 申明一些异常 开始*/
 class rbtree_error{};
 
 
-/* declarations of some exception end */
+/* 申明一些异常 结束*/
+
+/* 枚举节点的颜色 */
 
 enum node_color
 {
     RED,
     BLACK,
 };
+
+/* 申明红黑树类  */ 
 template<class key_type,class value_type>
 class red_black_tree;
+
+/* 申明红黑树节点类 */ 
 template<class key_type,class value_type>
 class red_black_tree_node;
 
+/* 定义节点迭代器 */ 
 template<class key_type,class value_type>
 class node_iterator
 {
 public:
     const key_type &key;
     value_type &value;
+    /* 由于有引用类型作为类成员，所以必须有初始化引用类型成员的构造函数。*/ 
     node_iterator(key_type &_key,value_type &_value,red_black_tree_node<key_type,value_type> *node);
+
+    /* 重载指针运算符 */ 
     node_iterator* operator->();
+    /* 重载星号运算符 */ 
     value_type& operator*();
     friend red_black_tree<key_type,value_type>;
 private:
+
+    /* 友元类（红黑树）可以通过迭代器访问私有成员，这个私有成员就是迭代器绑定的节点指针。*/ 
     red_black_tree_node<key_type,value_type> *node;
 };
 
+/* 定义红黑树节点 */ 
 template<class key_type,class value_type>
 class red_black_tree_node
 {
@@ -45,6 +59,7 @@ public:
     red_black_tree_node<key_type,value_type>* right;
 
     node_iterator<key_type,value_type> node_iter;
+
     bool nil;
     /**
     该构造函数用来构造非nil节点，如果没有传入左右子节点，会自动挂载nil节点作为子节点。
@@ -306,7 +321,7 @@ void red_black_tree<key_type,value_type>::fix_after_insert(red_black_tree_node<k
                 left_rotation(node->parent->parent);
                 break;
             }
-            else
+            else   //右左情况
             {
                 right_rotation(node->parent);
                 node=node->right;
